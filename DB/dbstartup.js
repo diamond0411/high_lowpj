@@ -8,7 +8,7 @@ const pool = new Pool({
 })
 
 async function a() {
-  pool.query('CREATE TABLE users(id int primary key, username varchar(255) NOT NULL, password VARCHAR(255) NOT NULL, icon VARCHAR(255));', (error, results) => {
+  await pool.query('CREATE TABLE users(id serial primary key, username varchar(255) NOT NULL, password VARCHAR(255) NOT NULL, icon VARCHAR(255));', (error, results) => {
       if (error) {
           throw error
       }
@@ -18,7 +18,7 @@ async function a() {
 a()
 
 async function b() {
-  pool.query('CREATE TABLE scores(id int primary key, userid int, time timestamp, score int, constraint a foreign key(userid) references users(id));', (error, results) => {
+  await pool.query('CREATE TABLE scores(id serial primary key, userid int, time timestamp, score int, constraint a foreign key(userid) references users(id));', (error, results) => {
       if (error) {
           throw error
       }
