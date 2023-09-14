@@ -92,6 +92,18 @@ const getScoreById = async (request, response) => {
   })
 }
 
+const updateScore = async (request, response) => {
+  try {
+    const id = request.params.id
+    const {userid, score} = request.body
+    await pool.query('UPDATE scores set userid = $1, time = now(), score = $2 where id = $3', [userid, score, id], (error, results) => {
+      response.status(200).json(results.rows)
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 
 module.exports = {
     getUsers,
@@ -101,5 +113,6 @@ module.exports = {
     getScores,
     getScoreById,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateScore
 }

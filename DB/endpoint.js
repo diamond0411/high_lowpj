@@ -18,6 +18,13 @@ app.get('/', (request, response) => {
 app.get('/users', db.getUsers)
 app.post('/users', db.createUsers)
 app.get('/users/:id', db.getUserById)
+app.put('/user/:id', db.updateUser)
+app.delete('/user/:id', db.deleteUser)
+app.post('/scores', db.createScore)
+app.get('/scores', db.getScores)
+app.get('/score/:id', db.getScores)
+app.put('/score/:id', db.updateScore)
+
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
