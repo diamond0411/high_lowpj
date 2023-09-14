@@ -17,6 +17,8 @@ app.get('/', (request, response) => {
 
 app.get('/users', db.getUsers)
 app.post('/users', db.createUsers)
+app.get('/users/:id', db.getUserById)
+
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
 })
