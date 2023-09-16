@@ -6,6 +6,7 @@ const pool = new Pool({
   database: 'high',
   port: 5432,
 })
+const axios = require('axios')
 
 const getUsers = async (request, response) => {
   await pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
@@ -104,6 +105,26 @@ const updateScore = async (request, response) => {
   }
 }
 
+const deleteScore = async(request, response) => {
+  try {
+    const id = request.params.id
+    await pool.query('DELETE from scores where id = $1', [id], (error, results) => {
+      response.status(200).json(results.rows)
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const getFrequency = async(request, response) => {
+  try {
+    const {word, year} = request.body
+    const response = axios.get(`books.google.com/ngrams/graph?content=${word}&year_start=${year}&year_end=${year}&corpus=en-2019&smoothing=3`)
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 module.exports = {
     getUsers,
@@ -114,5 +135,6 @@ module.exports = {
     getScoreById,
     updateUser,
     deleteUser,
-    updateScore
+    updateScore,
+    deleteScore
 }
