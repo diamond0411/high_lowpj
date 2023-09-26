@@ -117,15 +117,18 @@ const deleteScore = async(request, response) => {
     console.log(error)
   }
 }
-const regex = /{.*?"ngram":\s*"[^"]*",\s*"parent":\s*"[^"]*",\s*"type":\s*"NGRAM",\s*"timeseries":\s*\[.*?\]\s*}/;
+const regex = /{.*?"ngram":\s*"[^"]*",\s*"parent":\s*"[^"]*",\s*"type":\s*"NGRAM",\s*"timeseries":\s*\[.*?\]\s*}/gi;
 const getFrequency = async(request, response) => {
   try {
-    const {word, start, end} = request.body
-    const resp = await fetch(`https://books.google.com/ngrams/graph?content=${word}&year_start=${start}&year_end=${end}&corpus=en-2019&smoothing=0`);
+    const {word1, word2, start, end} = request.body
+    const words = word1 + ", " + word2
+    const resp = await fetch(`https://books.google.com/ngrams/graph?content=${words}&year_start=${start}&year_end=${end}&corpus=en-2019&smoothing=0`);
     const responseText = await resp.text();
     const match = responseText.match(regex)
-    const json = match[0];
-    response.status(200).json(JSON.parse(json)); 
+    const freq1 = JSON.parse(match[0])["timeseries"][0];
+    const freq2 = JSON.parse(match[1])["timeseries"][end-start];
+    const out = {freq1, freq2, "greater": (freq1>freq2)?"yes":"no"}
+    response.status(200).json(out); 
     
   } catch (error) {
     console.log(error)
