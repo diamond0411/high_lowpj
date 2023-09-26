@@ -24,7 +24,8 @@ app.post('/scores', db.createScore)
 app.get('/scores', db.getScores)
 app.get('/score/:id', db.getScores)
 app.put('/score/:id', db.updateScore)
-
+app.delete('/score/:id', db.deleteScore)
+app.get('/words', db.getFrequency)
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)

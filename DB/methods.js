@@ -1,3 +1,5 @@
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
 const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'ethan',
@@ -30,7 +32,7 @@ const createUsers =  async (request, response) => {
   try {
     const {username, icon, password} = request.body
     await pool.query('INSERT INTO users(username, password, icon) VALUES ($1, $2, $3)', [username, password, icon], (error, results) => {
-      response.status(200).json(results.rows)
+      response.status(200)
     })
     //query (SQL COMMAND, VARIABLES YOUR IMPORTING INTO THE COMMAND)
   }
@@ -115,11 +117,15 @@ const deleteScore = async(request, response) => {
     console.log(error)
   }
 }
-
+const regex = /{.*?"ngram":\s*"[^"]*",\s*"parent":\s*"[^"]*",\s*"type":\s*"NGRAM",\s*"timeseries":\s*\[.*?\]\s*}/;
 const getFrequency = async(request, response) => {
   try {
-    const {word, year} = request.body
-    const response = axios.get(`books.google.com/ngrams/graph?content=${word}&year_start=${year}&year_end=${year}&corpus=en-2019&smoothing=3`)
+    const {word, start, end} = request.body
+    const resp = await fetch(`https://books.google.com/ngrams/graph?content=${word}&year_start=${start}&year_end=${end}&corpus=en-2019&smoothing=0`);
+    const responseText = await resp.text();
+    const match = responseText.match(regex)
+    const json = match[0];
+    response.status(200).json(JSON.parse(json)); 
     
   } catch (error) {
     console.log(error)
@@ -136,5 +142,6 @@ module.exports = {
     updateUser,
     deleteUser,
     updateScore,
-    deleteScore
+    deleteScore,
+    getFrequency
 }
